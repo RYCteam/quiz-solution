@@ -1,0 +1,21 @@
+services:
+  api1:
+    build: ./api1
+    ports:
+      - "8080:5001" # User จะเรียกเข้ามาที่ port 8080 บนเครื่องเรา (ซึ่งจะต่อไปยัง port 5001 ของ api1)
+    environment:
+      - API2_URL=http://api2:5002/analyze # บอกให้ API1 รู้จักที่อยู่ของ API2
+    depends_on:
+      - api2
+    networks:
+      - app-network
+
+  api2:
+    build: ./api2
+    # ไม่จำเป็นต้อง map port ออกมาข้างนอก เพราะให้ api1 เรียกใช้ภายใน network เท่านั้น
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
